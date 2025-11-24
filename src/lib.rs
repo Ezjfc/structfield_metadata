@@ -1,5 +1,6 @@
 /// The main struct can be defined in whatever way desired.
-/// But all fields in each metadata struct will always be public.
+/// For non-tuple structs: fields in the metadata structs will inherit visibility from the main
+/// struct.
 ///
 /// This macro receives a main struct and multiple metadata structs. The main struct will remain in
 /// its original form while its fields will change the type and be taken to each metadata struct.
@@ -12,7 +13,7 @@
 ///     metadata!({
 ///         #[derive(Default, PartialEq, Debug)]
 ///         struct YourStruct {
-///             pub field_a: bool,
+///             field_a: bool,
 ///             field_b: usize,
 ///         }
 ///     }, {
@@ -73,7 +74,8 @@ macro_rules! metadata {
 }
 
 /// The main struct can be defined in whatever way desired.
-/// But all fields in the metadata struct will always be public.
+/// For non-tuple structs: fields in the metadata structs will inherit visibility from the main
+/// struct.
 ///
 /// This macro receives a main struct and a metadata struct. The main struct will be discarded
 /// its fields will change the type and be taken to the metadata struct.
@@ -86,7 +88,7 @@ macro_rules! metadata {
 ///         {
 ///             #[derive(Default, PartialEq, Debug)]
 ///             struct YourStruct {
-///                 pub field_a: bool,
+///                 field_a: bool,
 ///                 field_b: usize,
 ///             }
 ///         },
@@ -188,7 +190,7 @@ macro_rules! metadata_only {
         struct $metadata_struct {
             $(
                 $(#[$field_attrs])*
-                pub
+                $field_vis
                 $field: $metadata_type,
             )*
         }
@@ -215,7 +217,6 @@ macro_rules! metadata_only {
         struct $metadata_struct (
             $(
                 $(#[$field_attrs])*
-                pub
                 $metadata_type,
             )*
         );
