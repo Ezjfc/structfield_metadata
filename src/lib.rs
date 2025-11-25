@@ -11,15 +11,15 @@
 ///
 /// fn main() {
 ///     metadata!({
-///         #[derive(Default, PartialEq, Debug)]
-///         struct YourStruct {
-///             field_a: bool,
-///             field_b: usize,
-///         }
-///     }, {
-///         #[derive(PartialEq, Debug)] struct YourStructDescription: &'static str;
-///         #[derive(Default, PartialEq, Debug)] struct YourStructOtherMetadata: Option<f64>;
-///     });
+///             #[derive(Default, PartialEq, Debug)]
+///             struct YourStruct {
+///                 field_a: bool,
+///                 field_b: usize,
+///             }
+///         },
+///         #[derive(PartialEq, Debug)] struct YourStructDescription: &'static str,
+///         #[derive(Default, PartialEq, Debug)] struct YourStructOtherMetadata: Option<f64>,
+///     );
 ///
 ///     impl Default for YourStructDescription {
 ///         fn default() -> Self {
@@ -56,16 +56,18 @@
 /// ```
 #[macro_export]
 macro_rules! metadata {
-    ($main_struct:tt, {
+    (
+        $main_struct:tt,
         $(
             $(#[$metadata_attrs:meta])*
             $metadata_vis:vis
-            struct $metadata_struct:ident: $metadata_type:ty;
-        )+
-    }) => {
+            struct $metadata_struct:ident: $metadata_type:ty
+        ),+
+        $(,)*
+    ) => {
         $crate::put_struct!($main_struct);
         $(
-            metadata_only!(
+            structfield_metadata::metadata_only!(
                 $main_struct,
                 $(#[$metadata_attrs])* $metadata_vis struct $metadata_struct: $metadata_type
             );
@@ -84,16 +86,14 @@ macro_rules! metadata {
 /// #[macro_use] extern crate structfield_metadata;
 ///
 /// fn main() {
-///     metadata_only!(
-///         {
-///             #[derive(Default, PartialEq, Debug)]
-///             struct YourStruct {
-///                 field_a: bool,
-///                 field_b: usize,
-///             }
+///     metadata_only!({
+///            #[derive(Default, PartialEq, Debug)]
+///            struct YourStruct {
+///                field_a: bool,
+///                field_b: usize,
+///            }
 ///         },
-///         #[derive(PartialEq, Debug)]
-///         struct YourStructDescription: &'static str
+///         #[derive(PartialEq, Debug)] struct YourStructDescription: &'static str
 ///     );
 ///
 ///     impl Default for YourStructDescription {
@@ -220,14 +220,18 @@ macro_rules! metadata_only {
                 $metadata_type,
             )*
         );
+        // TODO: force implement Metadata trait? (Extra work since can't use this macro in proc
+        // macro anymore or otherwise duplicated impl)
     };
 }
 
 /// This rule is almost no-op except maintaining the macro hygigene of Rust.
 /// See: https://stackoverflow.com/a/75530574/13787084
 /// It receives the main struct and pastes it:
+///
+/// WARNING: this macro is for internal use only and is not part of the API.
 #[macro_export]
-#[deprecated = "For internal use only."]
+// #[deprecated = "For internal use only."]
 macro_rules! put_struct {
     // This rule handles structs:
     ({
