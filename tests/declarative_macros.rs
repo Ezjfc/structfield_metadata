@@ -191,4 +191,22 @@ fn test_attributes_derive_clap() {
         },
         struct ClapParserMetadata: (),
     );
+    metadata!(
+        {
+            struct HasLeadingCommaTuple((),);
+        },
+        struct NoLeadingCommaMetadataTuple: ()
+    );
+}
+
+#[test]
+fn test_generic_type_parameters() {
+    metadata!(
+        {
+            struct HasGenericTypeParameteres<T> {
+                no_leading_comma: T,
+            }
+        },
+        struct NoLeadingCommaMetadata: ()
+    );
 }

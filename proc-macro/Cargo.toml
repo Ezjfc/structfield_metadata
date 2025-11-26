@@ -1,0 +1,17 @@
+[package]
+name = "structfield_metadata_proc_macro"
+version = "0.1.0"
+edition = "2024"
+authors = [ "EndermanbugZJFC <endermanbugzjfc@gmail.com>" ]
+description = "Macros to add any kind of metadata to the fields in your structs and tuple structs."
+license = "LGPL-3.0-only"
+repository = "https://github.com/Ezjfc/structfield_metadata"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+itertools = "0.14.0"
+proc-macro2 = "1.0.103"
+quote = "1.0.42"
+syn = { version = "2.0.111", features = ["extra-traits", "parsing", "printing"] }

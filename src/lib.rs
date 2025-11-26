@@ -15,7 +15,8 @@
 /// #[macro_use] extern crate metadata_macro;
 ///
 /// fn main() {
-///     metadata!({
+///     metadata!(
+///         {
 ///             #[derive(Default, PartialEq, Debug)]
 ///             struct YourStruct {
 ///                 field_a: bool,
@@ -90,7 +91,8 @@ macro_rules! metadata {
 /// #[macro_use] extern crate metadata_macro;
 ///
 /// fn main() {
-///     metadata_only!({
+///     metadata_only!(
+///         {
 ///            #[derive(Default, PartialEq, Debug)]
 ///            struct YourStruct {
 ///                field_a: bool,
@@ -153,7 +155,7 @@ macro_rules! metadata_only {
     ) => {
         $(#[$metadata_attrs])*
         $metadata_vis
-        struct $metadata_struct {
+        struct $metadata_struct $(<$($generics)*>)? {
             $(
                 $field_vis
                 $field: $metadata_type,

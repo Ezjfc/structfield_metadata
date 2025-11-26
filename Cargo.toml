@@ -7,6 +7,12 @@ description = "Rust macros for a very elementary metadata-like system in structs
 license = "LGPL-3.0-only"
 repository = "https://github.com/Ezjfc/metadata_macro"
 
+[workspace]
+members = [
+  ".",
+  "proc-macro",
+]
+
 [features]
 advanced-tests = [ "dep:clap" ]
 
@@ -15,4 +21,3 @@ features = [ "advanced-tests" ]
 
 [dependencies]
 clap = { version = "4.5.53", features = ["derive"], optional = true }
-
