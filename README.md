@@ -37,4 +37,4 @@ impl YourStructDescription {
 ```
 
 # Known issues
-- Generic type parameters cannot be used in structs wrapped in `metadata!` or `metadata_only!` macro.
+- Generic type parameters cannot be used in structs wrapped in the macros.

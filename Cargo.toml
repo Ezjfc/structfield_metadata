@@ -1,8 +1,8 @@
 [package]
 name = "metadata_macro"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = [ "EndermanbugZJFC <endermanbugzjfc@gmail.com>" ]
-description = "Macros to add any kind of metadata to the fields in your structs and tuple structs."
+description = "Rust macros for a very elementary metadata-like system in structs and tuple structs."
 license = "LGPL-3.0-only"
 repository = "https://github.com/Ezjfc/metadata_macro"

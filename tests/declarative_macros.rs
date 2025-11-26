@@ -100,6 +100,32 @@ fn test_unusual_leading_commas() {
         {
             struct HasLeadingCommaTuple((),);
         },
-        struct NoLeadingCommaMetadataTuple: ()
+        struct NoLeadingCommaTupleMetadata: ()
+    );
+}
+
+#[test]
+fn test_doc_comments() {
+    metadata!(
+        {
+            /// Doc comment.
+            struct HasDocComment {
+                /// Doc comment.
+                has_doc_comment: (),
+            }
+        },
+        /// Doc comment.
+        struct HasDocCommentMetadata: (),
+    );
+    metadata!(
+        {
+            /// Doc comment.
+            struct HasDocCommentTuple(
+                /// Doc comment.
+                ()
+            );
+        },
+        /// Doc comment.
+        struct HasDocCommentTupleMetadata: (),
     );
 }

@@ -1,4 +1,7 @@
 //! Rust macros for a very elementary metadata-like system in structs and tuple structs.
+//!
+//! # Known issues
+//! - Generic type parameters cannot be used in structs wrapped in the macros.
 
 /// The main struct can be defined in whatever way desired.
 /// For non-tuple structs: fields in the metadata structs will inherit visibility from the main
@@ -80,7 +83,7 @@ macro_rules! metadata {
 /// For non-tuple structs: fields in the metadata structs will inherit visibility from the main
 /// struct.
 ///
-/// This macro receives a main struct and a metadata struct. The main struct will be discarded
+/// This macro receives a main struct and a metadata struct. The main struct will be discarded,
 /// its fields will change the type and be taken to the metadata struct.
 /// # Examples
 /// This example only declares a private metadata struct to hold the multilingual description of
@@ -152,7 +155,6 @@ macro_rules! metadata_only {
         $metadata_vis
         struct $metadata_struct {
             $(
-                $(#[$field_attrs])*
                 $field_vis
                 $field: $metadata_type,
             )*
@@ -175,24 +177,24 @@ macro_rules! metadata_only {
         $metadata_vis:vis
         struct $metadata_struct:ident: $metadata_type:ty
     ) => {
-        $(#[$metadata_attrs])*
-        $metadata_vis
-        struct $metadata_struct (
-            $(
-                $(#[$field_attrs])*
-                $metadata_type,
-            )*
-        );
-        // TODO: force implement Metadata trait? (Extra work since can't use this macro in proc
-        // macro anymore or otherwise duplicated impl)
+        $crate::put_tuple_discard_type!{
+            $(#[$metadata_attrs])*
+            $metadata_vis
+            struct $metadata_struct (
+                $({
+                    discard: $type,
+                    keep: $metadata_type,
+                },)*
+            );
+        };
     };
 }
 
 /// <section class="warning">
-///     <b>This macro is for internal use only and is not part of the API.</b>
+///     <b><code>put_struct!</code> is for internal use only and is not part of the API.</b>
 /// </section>
 ///
-/// This rule is almost no-op except maintaining the macro hygigene of Rust.
+/// This macro is almost no-op except for maintaining the macro hygiene of Rust.
 /// See: <https://stackoverflow.com/a/75530574/13787084>
 /// It receives the main struct and pastes it:
 #[macro_export]
@@ -240,6 +242,41 @@ macro_rules! put_struct {
                 $(#[$field_attrs])*
                 $type,
             )*
+        );
+    };
+}
+
+/// <section class="warning">
+///     <b><code>put_tuple_discard_type!</code> is for internal use only and is not part of the API.</b>
+/// </section>
+///
+/// This macro a is workaround for the macro expansion error "attempted to repeat an expression
+/// containing no syntax variables matched as repeating at this depth" for tuple structs. Since
+/// there is no way for declarative macros to know the number of repetitions of metavariables,
+/// putting a repetition to use must refer to at least one of its containing metavariables.
+///
+/// It receives specifications of a tuple struct but two different types for each field. The
+/// `discard` type will be abandoned while the `keep` type will become the eventual type of that
+/// field.
+/// Note: in [`metadata_only!`], all `keep` types are equal when calling this macro.
+///
+#[macro_export]
+macro_rules! put_tuple_discard_type {
+    {
+        $(#[$attrs:meta])*
+        $vis:vis
+        struct $name:ident (
+            $({
+                discard: $discard:ty,
+                keep: $keep:ty,
+            }),*
+            $(,)?
+        );
+    } => {
+        $(#[$attrs])*
+        $vis
+        struct $name (
+            $($keep,)*
         );
     };
 }
