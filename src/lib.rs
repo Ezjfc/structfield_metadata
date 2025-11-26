@@ -1,3 +1,5 @@
+//! Rust macros for a very elementary metadata-like system in structs and tuple structs.
+
 /// The main struct can be defined in whatever way desired.
 /// For non-tuple structs: fields in the metadata structs will inherit visibility from the main
 /// struct.
@@ -186,11 +188,13 @@ macro_rules! metadata_only {
     };
 }
 
-/// This rule is almost no-op except maintaining the macro hygigene of Rust.
-/// See: https://stackoverflow.com/a/75530574/13787084
-/// It receives the main struct and pastes it:
+/// <section class="warning">
+///     <b>This macro is for internal use only and is not part of the API.</b>
+/// </section>
 ///
-/// WARNING: this macro is for internal use only and is not part of the API.
+/// This rule is almost no-op except maintaining the macro hygigene of Rust.
+/// See: <https://stackoverflow.com/a/75530574/13787084>
+/// It receives the main struct and pastes it:
 #[macro_export]
 // #[deprecated = "For internal use only."]
 macro_rules! put_struct {
