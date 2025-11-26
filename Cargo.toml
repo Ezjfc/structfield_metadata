@@ -2,5 +2,5 @@
 name = "metadata_macro"
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
+authors = [ "EndermanbugZJFC <endermanbugzjfc@gmail.com>" ]
+description = "Macros to add any kind of metadata to the fields in your structs and tuple structs."
